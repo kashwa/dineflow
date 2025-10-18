@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Tenant;
 use Closure;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
 
@@ -25,6 +26,8 @@ class ResolveTenant
         if (!$tenant) {
             return response()->json(['error' => 'Tenant not found'], 404);
         }
+        Log::info('Tenant middleware executed', ['slug' => $slug]);
+        app()->instance('tenant', $tenant);
 
         // Bind globally for this request
         app()->instance(Tenant::class, $tenant);
